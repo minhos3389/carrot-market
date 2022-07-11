@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
+import { useForm } from "react-hook-form";
 
 
 // Less code 
@@ -9,66 +10,25 @@ import React, { useState } from "react";
 // Easier Inputs
 
 export default function Forms() {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [formErrors, setFormErrors] = useState("");
-
-  const onUsernameChange = (event: React.SyntheticEvent<HTMLInputElement>) => {
-    const {
-      currentTarget: { value },
-    } = event;
-    setUsername(value);
-  };
-  const onEmailChange = (event: React.SyntheticEvent<HTMLInputElement>) => {
-    const {
-      currentTarget: { value },
-    } = event;
-    setEmailError("");
-    setEmail(value);
-  };
-
-  const onPasswordChange = (event: React.SyntheticEvent<HTMLInputElement>) => {
-    const {
-      currentTarget: { value },
-    } = event;
-    setPassword(value);
-  };
-  const onSubmit = (event: React.SyntheticEvent<HTMLFormElement>) => {
-    // page reload 막기 위해서.
-    event.preventDefault();
-    if (username === "" || email === "" || password === "") {
-      setFormErrors("All fields are required");
-    }
-    if (!email.includes("@")) {
-      setEmailError("email is required");
-    }
-  };
-
-  console.log(username, email, password);
+  const { register, watch } = useForm();
+  console.log(watch());
 
   return (
-    <form onSubmit={onSubmit}>
-      <input
-        value={username}
-        onChange={onUsernameChange}
+    <form>
+      <input   
+        {...register("username")}     
         type="text"
         placeholder="Username"
         required
-        minLength={5}
       />
       <input
-        value={email}
-        onChange={onEmailChange}
+        {...register("email")}
         type="email"
         placeholder="Email"
         required
       />
-      {emailError}
       <input
-        value={password}
-        onChange={onPasswordChange}
+        {...register("password")}
         type="password"
         placeholder="Password"
         required
