@@ -1,53 +1,68 @@
-import React from "react";
-import { FieldErrors, useForm } from "react-hook-form";
-
-// Less code
-// Better validation
-// Better Errors (set, clear, display)
-// Have control over inputs
-// Dont deal with events
-// Easier Inputs
+import { FieldErrors, SubmitHandler, useForm } from "react-hook-form";
 
 interface LoginForm {
   username: string;
   password: string;
   email: string;
+  errors?: string;
 }
 
 export default function Forms() {
-  const { register, watch, handleSubmit } = useForm<LoginForm>();
-  // console.log(watch());
-  const onValid = (data: LoginForm) => {
-    console.log("im valid bby");
-  };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+    setError,
+    setValue,
+    reset,
+    resetField,
+  } = useForm<LoginForm>({
+    mode: "onChange",
+  });
+  // const onValid = (data: LoginForm) => {
+  //   console.log("im valid bby");
+  // };
+  // const onInvalid = (errors: FieldErrors) => {
+  //   console.log(errors);
+  // };
 
-  const onInvalid = (errors: FieldErrors) => {
-    console.log(errors);
-  };
+  const onSubmit: SubmitHandler<LoginForm> = data => console.log(data);
+
 
   return (
-    <form onSubmit={handleSubmit(onValid, onInvalid)}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <input
         {...register("username", {
-          required: "User name is required",
-          minLength: 5,
+          required: "Username is required",
+          minLength: {
+            message: "The username should be longer than 5 chars.",
+            value: 5,
+          },
         })}
         type="text"
         placeholder="Username"
       />
+      {errors.username?.message}
       <input
         {...register("email", {
           required: "Email is required",
+          validate: {
+            notGmail: (value) =>
+              !value.includes("@gmail.com") || "Gmail is not allowed",
+          },
         })}
         type="email"
         placeholder="Email"
       />
+      {errors.email?.message}
       <input
         {...register("password", { required: "Password is required" })}
         type="password"
         placeholder="Password"
       />
       <input type="submit" value="Create Account" />
+      {errors.errors?.message}
     </form>
   );
 }
